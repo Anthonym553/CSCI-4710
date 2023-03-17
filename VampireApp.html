@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Vampire App</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      section {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin-top: 50px;
+      }
+
+      section > * {
+        margin: 0 10px;
+      }
+
+      #developer1, #developer2, #developer3 {
+        display: none;
+      }
+
+      #nav-links {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+      }
+
+      #nav-links a {
+        display: inline-block;
+        margin-left: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Vampire App</h1>
+      <nav id="nav-links">
+        <a href="#">Home</a>
+        <a href="vamp_main.html">Vampire Info</a>
+      </nav>
+    </header>
+    <section>
+      <div>
+        <button onclick="toggleDeveloperInfo(1)">Anthony Miranda</button>
+      </div>
+      <div>
+        <button onclick="toggleDeveloperInfo(2)">Nick Terrell</button>
+      </div>
+      <div>
+        <button onclick="toggleDeveloperInfo(3)">Cameron Sabiston</button>
+      </div>
+    </section>
+    <section>
+      <div id="developer1">
+        <h3>Anthony</h3>
+        <p>Senior at East Carolina University. From North Carolina and hopes to work as a fullstack developer someday.</p>
+      </div>
+      <div id="developer2">
+        <h3>Nick</h3>
+        <p>Senior at East Carolina University. From North Carolina and has taken up a new interest in Web Development.</p>
+      </div>
+      <div id="developer3">
+        <h3>Cameron</h3>
+        <p>Senior at East Carolina University. From North Carolina and likes to work with backend development.</p>
+      </div>
+    </section>
+    <script>
+      function toggleDeveloperInfo(developerNumber) {
+        var developerDiv = document.getElementById('developer' + developerNumber);
+        if (developerDiv.style.display === 'none') {
+          developerDiv.style.display = 'block';
+        } else {
+          developerDiv.style.display = 'none';
+        }
+      }
+    </script>
+  </body>
+</html>

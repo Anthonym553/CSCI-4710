@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Vampire App</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.0.1/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.0.1/js/anychart-pie.min.js"></script>
+    <script src="script.js"></script>
+</head>
+
+<body>
+    <h1>Vampire App</h1>
+
+    <!-- Controller Part -->
+    <div id="controller">
+        <label for="logic-select">Data processing method:</label>
+        <select id="logic-select">
+            <option value="threshold">Threshold-based</option>
+            <option value="random">Random Guess</option>
+        </select>
+    </div>
+
+    <!-- View Part -->
+    <div id="view">
+        <h2>Visualization results</h2>
+        <canvas id="pie-chart"></canvas>
+    </div>
+
+    <!-- Model Part -->
+    <div id="model">
+        <h2>Classmate Information</h2>
+        <table id="classmate-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>No Shadow</th>
+                    <th>Pale Complexion</th>
+                    <th>No Garlic</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Add more rows for additional students -->
+            </tbody>
+        </table>
+
+        <form id="add-student-form">
+            <fieldset>
+                <legend>Add new student:</legend>
+                <label for="name-input">Name:</label>
+                <input type="text" id="name-input" name="name"><br>
+
+                <label for="shadow-checkbox">No Shadow:</label>
+                <input type="checkbox" id="shadow-checkbox" name="shadow"><br>
+
+                <label for="complexion-checkbox">Pale Complexion:</label>
+                <input type="checkbox" id="complexion-checkbox" name="complexion"><br>
+
+                <label for="garlic-checkbox">No Garlic:</label>
+                <input type="checkbox" id="garlic-checkbox" name="garlic"><br>
+
+                <input type="submit" value="Add">
+                <input type="button" value="Delete Most Recent" onclick="deleteMostRecentRow()">
+
+            </fieldset>
+        </form>
+    </div>
+
+    
+    <script>
+
+        // Add event listener to the form submit button
+        document.getElementById("add-student-form").addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent form from submitting and reloading the page
+
+            // Get form inputs
+            var name = document.getElementById("name-input").value;
+            var noShadow = document.getElementById("shadow-checkbox").checked;
+            var paleComplexion = document.getElementById("complexion-checkbox").checked;
+            var noGarlic = document.getElementById("garlic-checkbox").checked;
+
+            // Calculate result based on selected data processing method
+            var logicSelect = document.getElementById("logic-select");
+            var result;
+            if (logicSelect.value === "threshold") {
+                var score = (noShadow ? 4 : 0) + (paleComplexion ? 3 : 0) + (noGarlic ? 2 : 0);
+                result = score >= 6 ? "Vampire" : "Human";
+            } else if (logicSelect.value === "random") {
+                result = Math.random() < 0.5 ? "Vampire" : "Human";
+            }
+
+            // Add new row to the table
+            var table = document.getElementById("classmate-table").getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow();
+            var nameCell = newRow.insertCell(0);
+            var noShadowCell = newRow.insertCell(1);
+            var paleComplexionCell = newRow.insertCell(2);
+            var noGarlicCell = newRow.insertCell(3);
+            var resultCell = newRow.insertCell(4);
+            nameCell.innerHTML = name;
+            noShadowCell.innerHTML = noShadow ? "Yes" : "No";
+            paleComplexionCell.innerHTML = paleComplexion ? "Yes" : "No";
+            noGarlicCell.innerHTML = noGarlic ? "Yes" : "No";
+            resultCell.innerHTML = result;
+
+            // Count the amount of vampires and humans
+            // for (var i = 0; i < table.rows.length; i++) {
+            //     var row = table.rows[i];
+            //     if (row.cells[4].innerHTML === "Vampire") {
+            //         vampireCount++;
+            //     } else {
+            //         humanCount++;
+            //     }
+            // }
+            
+            var vampireCount = 0;
+            var humanCount = 0;
+            
+            for (var i = 0; i < table.rows.length; i++) {
+                var row = table.rows[i];
+                if (row.cells[4].innerHTML === "Vampire") {
+                    vampireCount++;
+                } else {
+                    humanCount++;
+                }
+            }
+
+            // Add data to a pie chart
+            var chart = document.getElementById('pie-chart').getContext('2d');
+            let myPieChart = new Chart(chart, {
+                type: 'pie',
+                data: {
+                    labels: ['Vampire', 'Human'],
+                    datasets: [{
+                        label: 'Vampire or Human',
+                        data: [vampireCount, humanCount],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // update mychart
+            const updateChartValue =(input, dataOrder) => {
+                myPieChart.data.datasets[0].data[dataOrder] = input;
+                myPieChart.update();
+            }
+            updateChartValue(vampireCount, 0);
+            updateChartValue(humanCount, 1);
+
+
+            // Clear form inputs
+            document.getElementById("name-input").value = "";
+            document.getElementById("shadow-checkbox").checked = false;
+            document.getElementById("complexion-checkbox").checked = false;
+            document.getElementById("garlic-checkbox").checked = false;
+        });
+
+        
+
+        function deleteMostRecentRow() {
+            var table = document.getElementById("classmate-table").getElementsByTagName('tbody')[0];
+            if (table.rows.length > 0) {
+                table.deleteRow(-1); // delete the last row in the table
+            }
+
+            // Update chart with new data
+            var chart = document.getElementById('pie-chart').getContext('2d');
+            var vampireCount = 0;
+            var humanCount = 0;
+            for (var i = 0; i < table.rows.length; i++) {
+                var row = table.rows[i];
+                if (row.cells[4].innerHTML === "Vampire") {
+                    vampireCount++;
+                } else {
+                    humanCount++;
+                }
+            }
+            chart.data.datasets[0].data = [vampireCount, humanCount];
+            chart.update();
+        }
+
+    </script>
+</body>
+
+</html>

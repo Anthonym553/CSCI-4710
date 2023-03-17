@@ -1,0 +1,40 @@
+body {
+	font-family: Arial, sans-serif;
+    background-color: #dad3f3;
+}
+
+h1, h2 {
+	text-align: center;
+}
+
+#controller, #view, #model {
+	width: 33%;
+	float: left;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+#controller {
+	background-color: transparent;
+}
+
+#view, #model {
+	background-color: transparent;
+}
+
+canvas {
+	width: 100%;
+	height: 200px;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th, td {
+	padding: 5px;
+	text-align: center;
+	border: 1px solid #AAA;
+}
+
